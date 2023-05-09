@@ -22,7 +22,7 @@
 
    ```shell
    cd pred_occ_planner_plus_ws
-   source devel setup.zsh
+   source devel/setup.zsh
    sh ./src/pred-occ-planner/plan_manager/scripts/px4_mocap.sh
    ```
 
@@ -32,7 +32,7 @@
 
    ```shell
    cd pred_occ_planner_plus_ws
-   source devel setup.zsh
+   source devel/setup.zsh
    roslaunch planner fly_G305_real.launch
    ```
 
@@ -105,7 +105,7 @@ moving_cylinder_real.h
 
    ```shell
    cd pred_occ_planner_plus_ws
-   source devel setup.zsh
+   source devel/setup.zsh
    sh ./src/pred-occ-planner/plan_manager/scripts/px4_gazebo.sh
    ```
 
@@ -124,7 +124,7 @@ moving_cylinder_real.h
 
    ```shell
    cd pred_occ_planner_plus_ws
-   source devel setup.zsh
+   source devel/setup.zsh
    roslaunch planner fly_G305_sim.launch
    ```
 
