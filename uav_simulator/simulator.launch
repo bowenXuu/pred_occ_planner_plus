@@ -1,0 +1,89 @@
+<launch>
+	<arg name="init_x" />
+	<arg name="init_y" />
+	<arg name="init_z" />
+	<arg name="obj_num" value="1" />
+	<arg name="map_size_x" />
+	<arg name="map_size_y" />
+	<arg name="map_size_z" />
+	<arg name="c_num" />
+	<arg name="p_num" />
+	<arg name="min_dist" />
+	<arg name="odometry_topic" />
+	<arg name="odom_pose_topic" />
+	<arg name="drone_id" />
+
+	<!-- map -->
+	<node pkg="map_generator" name="map_generator" type="random_forest" output="screen">
+		<param name="init_state_x" value="0.0" />
+		<param name="init_state_y" value="0.0" />
+		<param name="map/x_size" value="$(arg map_size_x)" />
+		<param name="map/y_size" value="$(arg map_size_y)" />
+		<param name="map/z_size" value="$(arg map_size_z)" />
+		<param name="map/resolution" value="0.1" />
+		<param name="map/frame_id" value="world" />
+
+		<param name="ObstacleShape/seed" value="-1" />
+		<param name="map/obs_num" value="50" />
+		<param name="ObstacleShape/lower_rad" value="0.3" />
+		<param name="ObstacleShape/upper_rad" value="1.0" />
+		<param name="ObstacleShape/lower_hei" value="5.0" />
+		<param name="ObstacleShape/upper_hei" value="5.0" />
+		<param name="ObstacleShape/set_cylinder" value="true" />
+
+		<param name="map/circle_num" value="0" />
+		<param name="ObstacleShape/radius_l" value="0.7" />
+		<param name="ObstacleShape/radius_h" value="0.5" />
+		<param name="ObstacleShape/z_l" value="0.7" />
+		<param name="ObstacleShape/z_h" value="0.8" />
+		<param name="ObstacleShape/theta" value="0.5" />
+
+		<param name="sensing/radius" value="5.0" />
+		<param name="sensing/rate" value="10.0" />
+	</node>
+
+	<!-- fake simulator -->
+	<group ns="uav$(arg drone_id)">
+
+		<node pkg="poscmd_2_odom" name="poscmd_2_odom" type="poscmd_2_odom" output="screen">
+			<param name="init_x" value="$(arg init_x)" />
+			<param name="init_y" value="$(arg init_y)" />
+			<param name="init_z" value="$(arg init_z)" />
+			<remap from="~command" to="planning/pos_cmd" />
+			<remap from="~odometry" to="$(arg odometry_topic)" />
+			<remap from="~pose" to="$(arg odom_pose_topic)" />
+		</node>
+
+		<!-- visualize drone odometry -->
+		<node pkg="odom_visualization" name="odom_visualization" type="odom_visualization" output="screen">
+			<remap from="~odom" to="$(arg odometry_topic)" />
+			<param name="color/a" value="1.0" />
+			<param name="color/r" value="0.0" />
+			<param name="color/g" value="0.0" />
+			<param name="color/b" value="0.0" />
+			<param name="covariance_scale" value="100.0" />
+			<param name="robot_scale" value="1.0" />
+			<param name="tf45" value="false" />
+			<param name="drone_id" value="drone_id" />
+		</node>
+
+		<!-- fake camera sensing -->
+		<node pkg="local_sensing_node" type="pcl_render_node" name="pcl_render_node" output="screen">
+			<rosparam command="load" file="$(find local_sensing_node)/params/camera.yaml" />
+			<param name="sensing_horizon" value="5.0" />
+			<param name="sensing_rate" value="30.0" />
+			<param name="estimation_rate" value="30.0" />
+			<param name="is_camera_frame" value="true" />
+			<param name="is_dynamic_map" value="false" />
+
+			<param name="map/x_size" value="$(arg map_size_x)" />
+			<param name="map/y_size" value="$(arg map_size_y)" />
+			<param name="map/z_size" value="$(arg map_size_z)" />
+
+			<remap from="~global_map" to="/map_generator/global_cloud" />
+			<remap from="~odometry" to="/$(arg odometry_topic)" />
+			<remap from="~pcl_render_node/cloud" to="~/cloud" />
+		</node>
+	</group>
+
+</launch>

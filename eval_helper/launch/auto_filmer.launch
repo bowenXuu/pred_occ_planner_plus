@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="filmer_control_test" pkg="eval_helper" type="filmer_control_test.py" output="screen" />
+
+</launch>

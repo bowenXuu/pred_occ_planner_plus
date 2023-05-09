@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="poscmd_2_odom" name="drone_teleop_key" type="drone_teleop_key" output="screen">
+    <remap from="~odom" to="/uav0/mavros/local_position/odom" />
+    <remap from="~command" to="/uav0/controller/pos_cmd" />
+  </node>
+</launch>

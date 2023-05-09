@@ -1,0 +1,8 @@
+<launch>
+<node pkg="eval_helper" type="multi_eval" name="multi_eval">
+    <param name="num_agents" value="4" />
+    <param name="query_rate" value="50" />
+    <param name="cmd_topic" value="/uav0/controller/pos_cmd" />
+    <param name="gt_topic" value="/ground_truth_state" />
+</node>
+</launch>

@@ -1,0 +1,40 @@
+<launch>
+  <arg name="obj_num" value="10" />
+  <arg name="drone_id" value="0" />
+
+  <arg name="map_size_x" value="20.0" />
+  <arg name="map_size_y" value="10.0" />
+  <arg name="map_size_z" value=" 2.0" />
+  <arg name="odom_topic" value="/mavros/local_position/odom" />
+  <arg name="pose_topic" value="/mavros/local_position/pose" />
+
+  <arg name="init_x" value="-10" />
+  <arg name="init_y" value="0.0" />
+  <arg name="init_z" value="0.2" />
+
+  <group ns="uav$(arg drone_id)">
+    <node pkg="rast_corridor_planning" name="map_sim_example" type="map_sim_example">
+      <rosparam file="$(find rast_corridor_planning)/cfg/cfg.yaml" command="load" />
+      <remap from="/camera_front/depth/points" to="/uav$(arg drone_id)/pcl_render_node/cloud" />
+    </node>
+  </group>
+
+  <!-- <node pkg="rast_corridor_planning" name="planning_node" type="planning_node" output="screen">
+		<rosparam file="$(find rast_corridor_planning)/cfg/cfg.yaml" command="load" /> 
+	</node> -->
+
+  <include file="$(find rast_corridor_planning)/launch/simulator.launch">
+    <arg name="drone_id" value="$(arg drone_id)" />
+    <arg name="map_size_x" value="$(arg map_size_x)" />
+    <arg name="map_size_y" value="$(arg map_size_y)" />
+    <arg name="map_size_z" value="$(arg map_size_z)" />
+    <arg name="init_x" value="$(arg init_x)" />
+    <arg name="init_y" value="$(arg init_y)" />
+    <arg name="init_z" value="$(arg init_z)" />
+    <arg name="odometry_topic" value="$(arg odom_topic)" />
+    <arg name="odom_pose_topic" value="$(arg pose_topic)" />
+  </include>
+
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find rast_corridor_planning)/rviz/sim.rviz" />
+  <!--	<node pkg="rviz" type="rviz" name="rviz2" args="-d $(find dynamic_occpuancy_map)/rviz/future_status.rviz"/>-->
+</launch>

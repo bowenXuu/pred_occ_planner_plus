@@ -1,0 +1,40 @@
+<launch>
+  <arg name="init_x"  default="-5.0"/>
+  <arg name="init_y"  default="2"/>
+  <arg name="init_z"  default="1.300"/>
+  <arg name="init_qx" default="0"/>
+  <arg name="init_qy" default="0"/>
+  <arg name="init_qz" default="0"/>
+  <arg name="init_qw" default="1"/>
+  <arg name="obs1_rad" default="0.5"/>
+  <arg name="obs2_rad" default="0.5"/>
+  <arg name="ped_rad" default="0.1"/>
+  <arg name="mav_rad" default="0.25"/>
+
+  <node pkg="traj_server" name="traj_server" type="px4_ctl_sim" output="screen">
+    <param name="init_x" value="$(arg init_x)" />
+    <param name="init_y" value="$(arg init_y)" />
+    <param name="init_z" value="$(arg init_z)" />
+    <param name="init_qx" value="$(arg init_qx)" />
+    <param name="init_qy" value="$(arg init_qy)" />
+    <param name="init_qz" value="$(arg init_qz)" />
+    <param name="init_qw" value="$(arg init_qw)" />    
+    <param name="obs1_rad" value="$(arg obs1_rad)" />
+    <param name="obs2_rad" value="$(arg obs2_rad)" />
+    <param name="ped_rad" value="$(arg ped_rad)" />
+    <param name="mav_rad" value="$(arg mav_rad)" />
+
+  </node>
+
+  <!-- <node name="rvizvisualisation" pkg="rviz" type="rviz" output="log" args="-d $(find planner)/rviz/traj_servo.rviz" /> -->
+
+  <node pkg="planner" name="planner" type="auto_kill.py" output="screen" />
+
+  <!-- <node pkg="rosbag" name="bag_record" type="record" args="/mavros/setpoint_raw/local /one_plan_time /test_over -o /home/nros/bags/occ_sim_bag/1.33/1.33_vel.bag" /> -->
+
+  <!-- <node pkg="rosbag" name="bag_record" type="record" args="/mavros/setpoint_raw/local /one_plan_time /test_over -o /home/nros/bags/occ_sim_bag/1.0/1.0_vel.bag" /> -->
+
+  <!-- <node pkg="rosbag" name="bag_record" type="record" args="/mavros/setpoint_raw/local /one_plan_time /test_over -o /home/nros/bags/occ_sim_bag/0.5/0.5_vel.bag" /> -->
+
+  <node pkg="rosbag" name="bag_record" type="record" args="/mavros/setpoint_raw/local /one_plan_time /test_over -o /home/pred_occ_planner_plus_ws/src/bags/test.bag" />
+</launch>
